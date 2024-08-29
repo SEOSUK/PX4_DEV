@@ -146,13 +146,51 @@ void OffboardControl::publish_offboard_control_mode()
  *        For this example, it sends a trajectory setpoint to make the
  *        vehicle hover at 5 meters with a yaw angle of 180 degrees.
  */
+ 
+int cnt = 0;
+int loop = 0;
+double goal_x = 0;
+double goal_y = 0;
 void OffboardControl::publish_trajectory_setpoint()
 {
 	TrajectorySetpoint msg{};
-	msg.position = {0.0, 0.0, -5.0};
+	msg.position = {goal_x, goal_y, -3.0};
 	msg.yaw = -3.14; // [-PI:PI]
 	msg.timestamp = this->get_clock()->now().nanoseconds() / 1000;
 	trajectory_setpoint_publisher_->publish(msg);
+
+
+	if (cnt == 0)
+	{
+	goal_x = 0;
+	goal_y = 0;
+	}
+	else if (cnt == 1)
+	{
+	goal_x = 6;
+	goal_y = 0;	
+	}
+	else if (cnt == 2)
+	{
+	goal_x = 6;
+	goal_y = 6;	
+	}
+	else if (cnt == 3)
+	{
+	goal_x = 0;
+	goal_y = 6;	
+	cnt = 0;
+	}
+		
+	
+	loop ++;
+	if (loop == 100)
+	{
+	cnt ++;
+	loop = 70;
+	std::cout << "goal position x n y" << goal_x << " && " << goal_y << std::endl;
+	}
+
 }
 
 /**
